@@ -7,17 +7,60 @@ var HashTable = function() {
 
 HashTable.prototype.insert = function(k, v) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  this._storage.set(index, v);
+  var tuple = [k, v];  
+  var foundKey = false;
+
+  // Access the container stored in ._storage with the key of our index value
+  var currentContainer = this._storage.get(index);
+
+  // If currentContainer is undefined, push an array containing the tuple into the current container, and set the the 
+  if(currentContainer === undefined){
+    currentContainer = [];
+    currentContainer.push(tuple);
+    this._storage.set(index, currentContainer);
+  } else {
+    // Otherwise, iterate over the container
+    for(var i = 0; i < currentContainer.length; i++) {
+      // Compare each tuple's key with k
+      if(currentContainer[i][0] === k) {
+        // If it matches, overwrite it and adjust foundKey to indicate a matching key was found
+        currentContainer[i][1] = v;
+        foundKey = true;
+      }
+    }
+    // Otherwise, key does not exist, so push tuple to container and set it as the value of the index
+    if(!foundKey) {
+      currentContainer.push(tuple);
+    }
+    this._storage.set(index, currentContainer);
+  }
 };
 
 HashTable.prototype.retrieve = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  return this._storage.get(index);
+  
+  // Access the container stored in ._storage with the key of our index value
+  var currentContainer = this._storage.get(index);
+  
+  // If currentContainer is undefined, return undefined;
+  if(currentContainer === undefined){
+    return currentContainer;
+  } else {
+    //iterate over container
+    for(var i = 0; i < currentContainer.length; i++) {
+  
+      //if key exists, return the value if value matches
+      if(currentContainer[i][0] === k) {
+        return currentContainer[i][1];
+      } 
+    }    
+    return currentContainer;
+  }
 };
 
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  
+  this._storage.set(index, undefined);
 };
 
 
