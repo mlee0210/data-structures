@@ -54,6 +54,17 @@ var binaryTreeMethods = {
   },
 
   'depthFirstLog' : function(fn) {
+    
+    var node = this.value;
+
+    fn(node);
+
+    if(this.left){
+      this.left.depthFirstLog(fn);
+    }
+
+    if(this.right){
+      this.right.depthFirstLog(fn);
+    }
   }
-  
 }
